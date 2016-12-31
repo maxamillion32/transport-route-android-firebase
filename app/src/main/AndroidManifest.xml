@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.fcorcino.transportroute.transportrouteclient">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="22"/>
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="22"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <!-- Activities -->
+        <activity
+            android:name="com.fcorcino.transportroute.ui.SignInActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.fcorcino.transportroute.ui.SignUpActivity"
+            android:label="@string/title_activity_sign_up"
+            android:parentActivityName="com.fcorcino.transportroute.ui.SignInActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.fcorcino.transportroute.ui.SignInActivity"/>
+        </activity>
+        <activity
+            android:name="com.fcorcino.transportroute.ui.ReservationActivity"
+            android:label="@string/title_activity_reservation"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name="com.fcorcino.transportroute.ui.pendingstops.PendingStopsListActivity"
+            android:label="@string/title_activity_pending_stops"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name="com.fcorcino.transportroute.ui.routes.RoutesListActivity"
+            android:label="@string/title_activity_routes_list"
+            android:parentActivityName="com.fcorcino.transportroute.ui.ReservationActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.fcorcino.transportroute.ui.ReservationActivity"/>
+        </activity>
+        <activity
+            android:name="com.fcorcino.transportroute.ui.ChooseStopsActivity"
+            android:label="@string/title_activity_choose_stops"
+            android:parentActivityName="com.fcorcino.transportroute.ui.routes.RoutesListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.fcorcino.transportroute.ui.routes.RoutesListActivity"/>
+        </activity>
+        <activity
+            android:name="com.fcorcino.transportroute.ui.MapActivity"
+            android:label="@string/title_activity_map"
+            android:parentActivityName="com.fcorcino.transportroute.ui.ReservationActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.fcorcino.transportroute.ui.ReservationActivity"/>
+        </activity>
+
+        <!-- Services -->
+        <service android:name="com.fcorcino.transportroute.ui.pendingstops.GeoFenceTransitionsIntentService"/>
+
+        <!-- Application Meta Data -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD3IqQF5J9120MUUSXPwI7gGGlgklQSsNg"/>
+
+        <activity
+            android:name="com.fcorcino.transportroute.ui.PreferencesActivity"
+            android:label="@string/title_activity_preferences"
+            android:parentActivityName="com.fcorcino.transportroute.ui.SignInActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.fcorcino.transportroute.ui.SignInActivity"/>
+        </activity>
+    </application>
+</manifest>

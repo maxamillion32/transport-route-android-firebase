@@ -1,0 +1,85 @@
+<resources>
+    <!-- Global values -->
+    <string name="app_name" translatable="false">Transport Route</string>
+    <string name="action_log_out" translatable="false">Log Out</string>
+    <string name="action_map">See Map</string>
+    <string name="action_preferences">Preferences</string>
+
+    <!-- SingInActivity values -->
+    <string name="title_activity_sign_in">Sign In</string>
+    <string name="user_edit_text_hint">User</string>
+    <string name="password_edit_text_hint">Password</string>
+    <string name="log_in_button_text" translatable="false">Log In</string>
+    <string name="create_user_text_view_text">Still not an user? Click here!</string>
+    <string name="invalid_log_in_message">Invalid log in</string>
+    <string name="user_already_taken">User already taken</string>
+
+    <!-- SignUpActivity activity-->
+    <string name="title_activity_sign_up">Sign Up</string>
+    <string name="name_edit_text_hint">Name</string>
+    <string name="user_name_edit_text_hint">Username</string>
+    <string name="sign_up_button_text">Sign Up</string>
+    <string name="credit_card_edit_text_hint">Credit Card Number</string>
+    <string name="require_field_error_message">This field is required</string>
+    <string name="user_created_message">User created successfully</string>
+    <string name="user_not_created_message">User not created, please try again!</string>
+
+    <!-- ReservationActivity values -->
+    <string name="title_activity_reservation">Reservation</string>
+    <string name="reservation_title_text">Reservation BarCode</string>
+    <string name="no_reservation_message_text">There is no reservation active.</string>
+    <string name="release_reservation_text">Release Reservation</string>
+    <string name="still_getting_location_text">Still getting location...</string>
+    <string name="reservation_id_text">Reservation ID</string>
+    <string name="quantity_of_person_text">Number of People</string>
+    <string name="route_price_text">Route Price</string>
+    <string name="reservation_amount_text">Reservation Amount</string>
+    <string name="person_label">Person</string>
+    <string name="people_label">People</string>
+    <string name="no_turn_available">There are no turn available for your request</string>
+    <string name="reservation_released_message">The reservation was released</string>
+
+    <!-- PendingStopsActivity values -->
+    <string name="title_activity_pending_stops">Pending Stops</string>
+    <string name="scan_activity_prompt">Please show me the code</string>
+    <string name="scan_canceled">Scan was canceled</string>
+    <string name="no_pending_stops_message">There are no stops so far!</string>
+    <string name="reservation_by_stop_message">%1s reservations</string>
+    <string name="valid_reservation_message">Valid reservation</string>
+    <string name="invalid_reservation_message">Invalid reservation</string>
+    <string name="to_pick_up_text">People to pick up: %d</string>
+    <string name="to_deliver_text">People to deliver: %d</string>
+
+    <!-- RoutesListActivity values -->
+    <string name="title_activity_routes_list">Routes</string>
+    <string name="empty_routes_list_message">There are no routes to show.</string>
+    <string name="route_name_label_text">Name:&#160;</string>
+    <string name="route_from_label_text">From:&#160;</string>
+    <string name="route_to_label_text">To:&#160;</string>
+    <string name="route_price_label_text">Price:&#160;</string>
+    <string name="filter_route_edit_text_hint">Type to filter</string>
+
+    <!-- ChooseStopsActivity values -->
+    <string name="title_activity_choose_stops">Choose Stops</string>
+    <string name="make_reservation_button_text">Make Reservation</string>
+    <string name="quantity_of_person_edit_text_hint">Quantity of Person</string>
+    <string name="unknown_text">Unknown</string>
+
+    <!-- MapActivity values -->
+    <string name="title_activity_map">Map</string>
+    <string name="current_reservation_text">Your Current Reservation</string>
+    <string name="unknown_turn_location">Unable to get turn</string>
+    <string name="reservation_marker_title_message">Last Stop: %s \n</string>
+    <string name="reservation_marker_snippet_message">Estimated Distance: %skm</string>
+    <string name="unable_to_draw_route_message">Unable to draw route on map</string>
+    <string name="stop_name_marker_title">Stop Name: %s</string>
+
+    <!-- PreferencesActivity values -->
+    <string name="title_activity_preferences">Preferences</string>
+    <string name="settings_server_address_default" translatable="false">http://10.0.0.15</string>
+    <string name="settings_server_address_key" translatable="false">SERVER_ADDRESS</string>
+    <string name="settings_server_address_label">Server Address</string>
+    <string name="settings_server_port_default" translatable="false">15000</string>
+    <string name="settings_server_port_key" translatable="false">SERVER_PORT</string>
+    <string name="settings_server_port_label">Server Port</string>
+</resources>

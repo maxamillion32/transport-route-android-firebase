@@ -1,0 +1,75 @@
+<resources>
+    <!-- Global values -->
+    <string name="action_map">Ver Mapa</string>
+    <string name="action_preferences">Preferencias</string>
+
+    <!-- SingInActivity values -->
+    <string name="user_edit_text_hint">Usuario</string>
+    <string name="password_edit_text_hint">Contrasena</string>
+    <string name="create_user_text_view_text">Todavia no eres un usuario? Pulsa aqui!</string>
+    <string name="invalid_log_in_message">Log in invalido</string>
+    <string name="user_already_taken">Usuario ya registrado</string>
+
+    <!-- SignUpActivity activity-->
+    <string name="title_activity_sign_up">Registrate</string>
+    <string name="name_edit_text_hint">Nombre</string>
+    <string name="user_name_edit_text_hint">Nombre de Usuario</string>
+    <string name="sign_up_button_text">Registrarse</string>
+    <string name="credit_card_edit_text_hint">Numero de Tarjeta de Credito</string>
+    <string name="require_field_error_message">El campo es requerido</string>
+    <string name="user_created_message">Usuario creado exitosamente</string>
+    <string name="user_not_created_message">Usuario no creado, por favor intente de nuevo!</string>
+
+    <!-- ReservationActivity values -->
+    <string name="title_activity_reservation">Reservacion</string>
+    <string name="reservation_title_text">Codigo de Barra de la Reservacion</string>
+    <string name="no_reservation_message_text">No hay una reservacion activa.</string>
+    <string name="reservation_id_text">Id de la Reservacion</string>
+    <string name="route_price_text">Precio de la Ruta</string>
+    <string name="person_label">Persona</string>
+    <string name="people_label">Personas</string>
+    <string name="no_turn_available">No hay turnos disponibles para tu solicitud</string>
+
+    <!-- PendingStopsActivity values -->
+    <string name="title_activity_pending_stops">Paradas Pendientes</string>
+    <string name="scan_activity_prompt">Por favor, muestrame el codigo</string>
+    <string name="scan_canceled">El escaneo fue cancelado</string>
+    <string name="no_pending_stops_message">No hay paradas hasta el momento!</string>
+    <string name="reservation_by_stop_message">%1s reservaciones</string>
+    <string name="valid_reservation_message">Reservacion valida</string>
+    <string name="invalid_reservation_message">Reservacion invalida</string>
+
+    <!-- RoutesListActivity values -->
+    <string name="title_activity_routes_list">Rutas</string>
+    <string name="empty_routes_list_message">No hay rutas para mostrar.</string>
+    <string name="route_name_label_text">Nombre:&#160;</string>
+    <string name="route_from_label_text">Desde:&#160;</string>
+    <string name="route_to_label_text">Hasta:&#160;</string>
+    <string name="route_price_label_text">Precio:&#160;></string>
+    <string name="filter_route_edit_text_hint">Escriba para filtrar</string>
+
+    <!-- ChooseStopsActivity values -->
+    <string name="title_activity_choose_stops">Escoja Paradas</string>
+    <string name="make_reservation_button_text">Hacer Reservacion</string>
+    <string name="quantity_of_person_edit_text_hint">Cantidad de personas</string>
+    <string name="unknown_text">Desconocido</string>
+
+    <!-- MapActivity values -->
+    <string name="title_activity_map">Mapa</string>
+    <string name="current_reservation_text">Tu Reservacion Actual</string>
+    <string name="unknown_turn_location">No se pudo obtener el turno</string>
+    <string name="reservation_marker_title_message">Ultima Parada: %s</string>
+    <string name="reservation_marker_snippet_message">Distancia Estimada: %skm</string>
+    <string name="unable_to_draw_route_message">No se pudo dibujar la ruta en el mapa</string>
+    <string name="stop_name_marker_title">Parada: %s</string>
+
+    <!-- PreferencesActivity values -->
+    <string name="title_activity_preferences">Preferencias</string>
+    <string name="settings_server_address_label">Direccion del Servidor</string>
+    <string name="settings_server_port_label">Puerto del Servidor</string>
+    <string name="quantity_of_person_text">Numero de Personas</string>
+    <string name="release_reservation_text">Liberar Reservacion</string>
+    <string name="reservation_amount_text">Monto de la Reservacion</string>
+    <string name="still_getting_location_text">Obteniendo ubicacion...</string>
+    <string name="title_activity_sign_in" translatable="false">Conectarse</string>
+</resources>
