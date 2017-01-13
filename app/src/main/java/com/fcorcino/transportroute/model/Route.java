@@ -3,7 +3,6 @@ package com.fcorcino.transportroute.model;
 import java.io.Serializable;
 
 public class Route implements Serializable {
-    private static final long serialVersionUID = 3850591092544640086L;
     private String routeId, name, from, to, status;
     private float price;
 

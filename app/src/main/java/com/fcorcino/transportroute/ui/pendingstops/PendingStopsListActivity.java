@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -21,6 +20,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.fcorcino.transportroute.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.Geofence;
@@ -30,14 +30,11 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.leaderapps.transport.model.PendingStop;
-import com.leaderapps.transport.model.Stop;
-import com.leaderapps.transport.model.Turn;
-import com.leaderapps.transport.transportrouteclient.R;
-import com.leaderapps.transport.ui.SignInActivity;
-import com.leaderapps.transport.utils.ApiUtils;
-import com.leaderapps.transport.utils.Constants;
-import com.leaderapps.transport.utils.Utils;
+import com.fcorcino.transportroute.model.PendingStop;
+import com.fcorcino.transportroute.model.Stop;
+import com.fcorcino.transportroute.ui.SignInActivity;
+import com.fcorcino.transportroute.utils.Constants;
+import com.fcorcino.transportroute.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -132,14 +129,14 @@ public class PendingStopsListActivity extends AppCompatActivity
 
         if (turnId != null) {
             if (mStopsArrayList == null) {
-                new GetStopsByRouteAsyncTask().execute();
+                //new GetStopsByRouteAsyncTask().execute();
             }
 
             mPendingStopsHandler = new Handler();
             mPendingStopsHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    new GetPendingStopsByTurnAsyncTask().execute(turnId);
+                   // new GetPendingStopsByTurnAsyncTask().execute(turnId);
                     mPendingStopsHandler.postDelayed(this, REFRESH_DELAY_TIME);
                 }
             });
@@ -202,7 +199,7 @@ public class PendingStopsListActivity extends AppCompatActivity
                 IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
                 if (scanResult != null) {
                     String reservationId = scanResult.getContents();
-                    new UpdateReservationAsyncTask().execute(reservationId);
+                    //new UpdateReservationAsyncTask().execute(reservationId);
                 }
             } else {
                 Utils.showToast(this, getString(R.string.scan_canceled));
@@ -233,7 +230,7 @@ public class PendingStopsListActivity extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location location) {
-        new UpdateTurnLocationAsyncTask().execute(location.getLatitude() + "," + location.getLongitude());
+        //new UpdateTurnLocationAsyncTask().execute(location.getLatitude() + "," + location.getLongitude());
     }
 
     /**
@@ -287,7 +284,7 @@ public class PendingStopsListActivity extends AppCompatActivity
         });
 
         if (Utils.getSharedPreference(this, Constants.SHARED_PREF_USER_TURN_ID_KEY) == null) {
-            new GetTurnByDriverAsyncTask().execute();
+            //new GetTurnByDriverAsyncTask().execute();
         }
     }
 
@@ -388,133 +385,133 @@ public class PendingStopsListActivity extends AppCompatActivity
         return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    /**
-     * This class handles the request to get the pending stops by turn in a background thread.
-     */
-    private class GetPendingStopsByTurnAsyncTask extends AsyncTask<String, Void, ArrayList<PendingStop>> {
-
-        @Override
-        protected void onPreExecute() {
-            mLoadingIndicatorProgressBar.setVisibility(View.VISIBLE);
-            mPendingStopsArrayAdapter.clear();
-        }
-
-        @Override
-        protected ArrayList<PendingStop> doInBackground(String... params) {
-            String turnId = params[0];
-            return ApiUtils.getPendingStopsByTurn(getBaseContext(), turnId);
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<PendingStop> pendingStops) {
-            if (pendingStops != null && !pendingStops.isEmpty()) {
-                mPendingStopsArrayAdapter.addAll(pendingStops);
-            }
-
-            mLoadingIndicatorProgressBar.setVisibility(View.GONE);
-        }
-    }
-
-    /**
-     * This class handles the request to get the turn by driver in a background thread.
-     */
-    private class GetTurnByDriverAsyncTask extends AsyncTask<Void, Void, Turn> {
-
-        @Override
-        protected void onPreExecute() {
-            mLoadingIndicatorProgressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Turn doInBackground(Void... voids) {
-            String driverId = Utils.getSharedPreference(getApplicationContext(), Constants.SHARED_PREF_USER_ID_KEY);
-            return ApiUtils.getTurnByDriver(getBaseContext(), driverId);
-        }
-
-        @Override
-        protected void onPostExecute(Turn turn) {
-            if (turn != null) {
-                Utils.setSharedPreference(
-                        PendingStopsListActivity.this,
-                        Constants.SHARED_PREF_USER_TURN_ID_KEY,
-                        String.valueOf(turn.getTurnId()));
-
-                Utils.setSharedPreference(
-                        PendingStopsListActivity.this,
-                        Constants.SHARED_PREF_ROUTE_ID_KEY,
-                        String.valueOf(turn.getRouteId()));
-
-                new GetPendingStopsByTurnAsyncTask().execute(turn.getTurnId());
-
-                if (mStopsArrayList == null) {
-                    new GetStopsByRouteAsyncTask().execute();
-                }
-            }
-
-            mLoadingIndicatorProgressBar.setVisibility(View.GONE);
-        }
-    }
-
-    /**
-     * This class handles the request to update the turn location in a background thread.
-     */
-    private class UpdateTurnLocationAsyncTask extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected Void doInBackground(String... params) {
-            String location = params[0];
-            String turnId = Utils.getSharedPreference(getApplicationContext(), Constants.SHARED_PREF_USER_TURN_ID_KEY);
-            ApiUtils.updateTurnLocation(getBaseContext(), turnId, location);
-            return null;
-        }
-    }
-
-    /**
-     * This class handles the request to update the reservation in a background thread.
-     */
-    private class UpdateReservationAsyncTask extends AsyncTask<String, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            String reservationId = params[0];
-            return ApiUtils.updateReservation(getBaseContext(), reservationId, Constants.STATUS_VALUE_PICK_UP);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean isUpdated) {
-            if (isUpdated) {
-                Utils.showToast(getApplicationContext(), getString(R.string.valid_reservation_message));
-            } else {
-                Utils.showToast(getApplicationContext(), getString(R.string.invalid_reservation_message));
-            }
-        }
-    }
-
-    /**
-     * This class handles the request to get the stops by a route in a background thread.
-     */
-    private class GetStopsByRouteAsyncTask extends AsyncTask<String, Void, ArrayList<Stop>> {
-
-        @Override
-        protected void onPreExecute() {
-            mLoadingIndicatorProgressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected ArrayList<Stop> doInBackground(String... params) {
-            String routeId = Utils.getSharedPreference(getBaseContext(), Constants.SHARED_PREF_ROUTE_ID_KEY);
-            return ApiUtils.getStopsByRoute(getBaseContext(), routeId);
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Stop> stops) {
-            if (stops != null && !stops.isEmpty()) {
-                mStopsArrayList = stops;
-
-                if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-                    registerGeoFences(mStopsArrayList);
-                }
-            }
-        }
-    }
+//    /**
+//     * This class handles the request to get the pending stops by turn in a background thread.
+//     */
+//    private class GetPendingStopsByTurnAsyncTask extends AsyncTask<String, Void, ArrayList<PendingStop>> {
+//
+//        @Override
+//        protected void onPreExecute() {
+//            mLoadingIndicatorProgressBar.setVisibility(View.VISIBLE);
+//            mPendingStopsArrayAdapter.clear();
+//        }
+//
+//        @Override
+//        protected ArrayList<PendingStop> doInBackground(String... params) {
+//            String turnId = params[0];
+//            return ApiUtils.getPendingStopsByTurn(getBaseContext(), turnId);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(ArrayList<PendingStop> pendingStops) {
+//            if (pendingStops != null && !pendingStops.isEmpty()) {
+//                mPendingStopsArrayAdapter.addAll(pendingStops);
+//            }
+//
+//            mLoadingIndicatorProgressBar.setVisibility(View.GONE);
+//        }
+//    }
+//
+//    /**
+//     * This class handles the request to get the turn by driver in a background thread.
+//     */
+//    private class GetTurnByDriverAsyncTask extends AsyncTask<Void, Void, Turn> {
+//
+//        @Override
+//        protected void onPreExecute() {
+//            mLoadingIndicatorProgressBar.setVisibility(View.VISIBLE);
+//        }
+//
+//        @Override
+//        protected Turn doInBackground(Void... voids) {
+//            String driverId = Utils.getSharedPreference(getApplicationContext(), Constants.SHARED_PREF_USER_ID_KEY);
+//            return ApiUtils.getTurnByDriver(getBaseContext(), driverId);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Turn turn) {
+//            if (turn != null) {
+//                Utils.setSharedPreference(
+//                        PendingStopsListActivity.this,
+//                        Constants.SHARED_PREF_USER_TURN_ID_KEY,
+//                        String.valueOf(turn.getTurnId()));
+//
+//                Utils.setSharedPreference(
+//                        PendingStopsListActivity.this,
+//                        Constants.SHARED_PREF_ROUTE_ID_KEY,
+//                        String.valueOf(turn.getRouteId()));
+//
+//                new GetPendingStopsByTurnAsyncTask().execute(turn.getTurnId());
+//
+//                if (mStopsArrayList == null) {
+//                    new GetStopsByRouteAsyncTask().execute();
+//                }
+//            }
+//
+//            mLoadingIndicatorProgressBar.setVisibility(View.GONE);
+//        }
+//    }
+//
+//    /**
+//     * This class handles the request to update the turn location in a background thread.
+//     */
+//    private class UpdateTurnLocationAsyncTask extends AsyncTask<String, Void, Void> {
+//
+//        @Override
+//        protected Void doInBackground(String... params) {
+//            String location = params[0];
+//            String turnId = Utils.getSharedPreference(getApplicationContext(), Constants.SHARED_PREF_USER_TURN_ID_KEY);
+//            ApiUtils.updateTurnLocation(getBaseContext(), turnId, location);
+//            return null;
+//        }
+//    }
+//
+//    /**
+//     * This class handles the request to update the reservation in a background thread.
+//     */
+//    private class UpdateReservationAsyncTask extends AsyncTask<String, Void, Boolean> {
+//
+//        @Override
+//        protected Boolean doInBackground(String... params) {
+//            String reservationId = params[0];
+//            return ApiUtils.updateReservation(getBaseContext(), reservationId, Constants.STATUS_VALUE_PICK_UP);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Boolean isUpdated) {
+//            if (isUpdated) {
+//                Utils.showToast(getApplicationContext(), getString(R.string.valid_reservation_message));
+//            } else {
+//                Utils.showToast(getApplicationContext(), getString(R.string.invalid_reservation_message));
+//            }
+//        }
+//    }
+//
+//    /**
+//     * This class handles the request to get the stops by a route in a background thread.
+//     */
+//    private class GetStopsByRouteAsyncTask extends AsyncTask<String, Void, ArrayList<Stop>> {
+//
+//        @Override
+//        protected void onPreExecute() {
+//            mLoadingIndicatorProgressBar.setVisibility(View.VISIBLE);
+//        }
+//
+//        @Override
+//        protected ArrayList<Stop> doInBackground(String... params) {
+//            String routeId = Utils.getSharedPreference(getBaseContext(), Constants.SHARED_PREF_ROUTE_ID_KEY);
+//            return ApiUtils.getStopsByRoute(getBaseContext(), routeId);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(ArrayList<Stop> stops) {
+//            if (stops != null && !stops.isEmpty()) {
+//                mStopsArrayList = stops;
+//
+//                if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+//                    registerGeoFences(mStopsArrayList);
+//                }
+//            }
+//        }
+//    }
 }

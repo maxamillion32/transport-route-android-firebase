@@ -2,7 +2,6 @@ package com.fcorcino.transportroute.ui.routes;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,11 +14,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.leaderapps.transport.model.Route;
-import com.leaderapps.transport.transportrouteclient.R;
-import com.leaderapps.transport.ui.ChooseStopsActivity;
-import com.leaderapps.transport.utils.ApiUtils;
-import com.leaderapps.transport.utils.Constants;
+import com.fcorcino.transportroute.R;
+import com.fcorcino.transportroute.model.Route;
+import com.fcorcino.transportroute.ui.ChooseStopsActivity;
+import com.fcorcino.transportroute.utils.Constants;
 
 import java.util.ArrayList;
 
@@ -49,7 +47,7 @@ public class RoutesListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        new GetRoutesAsyncTask().execute();
+       // new GetRoutesAsyncTask().execute();
     }
 
     @Override
@@ -114,31 +112,31 @@ public class RoutesListActivity extends AppCompatActivity {
         startActivityForResult(intent, Constants.REQUEST_CODE_CHOOSE_STOPS);
     }
 
-    /**
-     * This class handles the request to get the routes in a background thread.
-     */
-    private class GetRoutesAsyncTask extends AsyncTask<Void, Void, ArrayList<Route>> {
-
-        @Override
-        protected void onPreExecute() {
-            mLoadingIndicatorProgressBar.setVisibility(View.VISIBLE);
-            mEmptyRoutesListMessageTextView.setVisibility(View.GONE);
-            mRoutesAdapter.clear();
-        }
-
-        @Override
-        protected ArrayList<Route> doInBackground(Void... voids) {
-            return ApiUtils.getRoutes(getBaseContext());
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Route> routes) {
-            mLoadingIndicatorProgressBar.setVisibility(View.GONE);
-            mEmptyRoutesListMessageTextView.setVisibility(View.VISIBLE);
-
-            if (routes != null && !routes.isEmpty()) {
-                mRoutesAdapter.addAll(routes);
-            }
-        }
-    }
+//    /**
+//     * This class handles the request to get the routes in a background thread.
+//     */
+//    private class GetRoutesAsyncTask extends AsyncTask<Void, Void, ArrayList<Route>> {
+//
+//        @Override
+//        protected void onPreExecute() {
+//            mLoadingIndicatorProgressBar.setVisibility(View.VISIBLE);
+//            mEmptyRoutesListMessageTextView.setVisibility(View.GONE);
+//            mRoutesAdapter.clear();
+//        }
+//
+//        @Override
+//        protected ArrayList<Route> doInBackground(Void... voids) {
+//            return ApiUtils.getRoutes(getBaseContext());
+//        }
+//
+//        @Override
+//        protected void onPostExecute(ArrayList<Route> routes) {
+//            mLoadingIndicatorProgressBar.setVisibility(View.GONE);
+//            mEmptyRoutesListMessageTextView.setVisibility(View.VISIBLE);
+//
+//            if (routes != null && !routes.isEmpty()) {
+//                mRoutesAdapter.addAll(routes);
+//            }
+//        }
+//    }
 }

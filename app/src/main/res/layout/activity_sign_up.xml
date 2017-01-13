@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.leaderapps.transport.ui.SignUpActivity">
+    tools:context="com.fcorcino.transportroute.ui.SignUpActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -36,7 +36,6 @@
             android:id="@+id/form_fields_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
             android:orientation="vertical">
 
             <android.support.design.widget.TextInputLayout
@@ -48,7 +47,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/name_edit_text_hint"
-                    android:inputType="text"/>
+                    android:inputType="textCapWords"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -56,11 +55,11 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/user_name_edit_text"
+                    android:id="@+id/email_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/user_name_edit_text_hint"
-                    android:inputType="text"/>
+                    android:hint="@string/email_edit_text_hint"
+                    android:inputType="textEmailAddress"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -84,7 +83,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/credit_card_edit_text_hint"
-                    android:inputType="number"/>
+                    android:inputType="number"
+                    android:maxLength="12"
+                    android:numeric="integer"/>
             </android.support.design.widget.TextInputLayout>
 
             <Button

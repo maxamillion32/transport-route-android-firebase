@@ -10,8 +10,8 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
-import com.leaderapps.transport.model.Route;
-import com.leaderapps.transport.transportrouteclient.R;
+import com.fcorcino.transportroute.R;
+import com.fcorcino.transportroute.model.Route;
 
 import java.util.ArrayList;
 

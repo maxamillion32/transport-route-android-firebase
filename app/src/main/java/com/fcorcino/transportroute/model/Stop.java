@@ -3,7 +3,6 @@ package com.fcorcino.transportroute.model;
 import java.io.Serializable;
 
 public class Stop implements Serializable {
-    private static final long serialVersionUID = -2902114931784126999L;
     private String stopId, routeId, location, status, name;
     private int sequence;
 

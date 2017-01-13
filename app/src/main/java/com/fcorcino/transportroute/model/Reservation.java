@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.sql.Date;
 
 public class Reservation implements Serializable {
-    private static final long serialVersionUID = 68361592581548955L;
     private String reservationId, stopFromId, stopToId, status, userId, turnId;
     private Date departureDate, checkInDate, payDate;
     private float price, amount;

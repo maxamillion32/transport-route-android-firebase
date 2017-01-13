@@ -2,22 +2,6 @@ package com.fcorcino.transportroute.utils;
 
 public class Constants {
 
-    // TCP server services codes
-    public static final int SERVICE_CODE_CREATE_USER = 1;
-    public static final int SERVICE_CODE_LOG_IN_USER = 2;
-    public static final int SERVICE_CODE_GET_ROUTES = 3;
-    public static final int SERVICE_CODE_GET_STOPS_BY_ROUTE = 4;
-    public static final int SERVICE_CODE_GET_TURNS_BY_ROUTE = 5;
-    public static final int SERVICE_CODE_GET_CURRENT_RESERVATION = 6;
-    public static final int SERVICE_CODE_MAKE_RESERVATION = 7;
-    public static final int SERVICE_CODE_GET_PENDING_STOPS_BY_TURN = 8;
-    public static final int SERVICE_CODE_GET_TURN_BY_DRIVER = 9;
-    public static final int SERVICE_CODE_UPDATE_RESERVATION = 10;
-    public static final int SERVICE_CODE_UPDATE_TURN_LOCATION = 11;
-    public static final int SERVICE_CODE_GET_TURN = 12;
-    public static final int SERVICE_CODE_UPDATE_TURN_LAST_STOP = 13;
-    public static final int SERVICE_CODE_VALIDATE_USERNAME = 14;
-
     // User types
     public static final String USER_TYPE_USER = "1";
     public static final String USER_TYPE_DRIVER = "2";
@@ -49,4 +33,7 @@ public class Constants {
     public static final String SHARED_PREF_USER_TURN_ID_KEY = "SHARED_PREF_USER_TURN_ID_KEY";
     public static final String SHARED_PREF_ROUTE_ID_KEY = "SHARED_PREF_ROUTE_ID_KEY";
     public static final String SHARED_PREF_RESERVATION_ID_KEY = "SHARED_PREF_RESERVATION_ID_KEY";
+
+    // Firebase nodes keys
+    public static final String FIREBASE_KEY_USERS = "users";
 }

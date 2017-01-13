@@ -3,8 +3,7 @@ package com.fcorcino.transportroute.model;
 import java.io.Serializable;
 
 public class User implements Serializable{
-    private static final long serialVersionUID = 397026228666161978L;
-    private String userId, name, userName, password, status, creditCard, userTypeId;
+    private String userId, name, email, password, status, creditCard, userTypeId;
 
     public String getUserId() {
         return userId;
@@ -22,12 +21,12 @@ public class User implements Serializable{
         this.name = name;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

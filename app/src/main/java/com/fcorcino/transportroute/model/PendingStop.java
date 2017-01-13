@@ -3,7 +3,6 @@ package com.fcorcino.transportroute.model;
 import java.io.Serializable;
 
 public class PendingStop implements Serializable {
-    private static final long serialVersionUID = 1219941358681722474L;
     private String stopName, stopType;
     private int peopleWaiting;
 

@@ -1,12 +1,11 @@
 package com.fcorcino.transportroute.ui;
 
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.fcorcino.transportroute.R;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,17 +15,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.leaderapps.transport.model.Stop;
-import com.leaderapps.transport.model.Turn;
-import com.leaderapps.transport.transportrouteclient.R;
-import com.leaderapps.transport.utils.ApiUtils;
-import com.leaderapps.transport.utils.Constants;
-import com.leaderapps.transport.utils.Utils;
+import com.fcorcino.transportroute.model.Turn;
+import com.fcorcino.transportroute.utils.Constants;
 
-import java.util.ArrayList;
-
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapActivity extends BaseActivity implements OnMapReadyCallback {
 
     /**
      * @var mMapFragment the map fragment.
@@ -87,7 +79,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mLocationHandler.post(new Runnable() {
             @Override
             public void run() {
-                new GetTurnAsyncTask().execute();
+               // new GetTurnAsyncTask().execute();
 
                 mLocationHandler.postDelayed(this, UPDATES_DELAY_TIME);
             }
@@ -186,60 +178,60 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         return new LatLng(Double.valueOf(latLngString.split(",")[0]), Double.valueOf(latLngString.split(",")[1]));
     }
 
-    /**
-     * This class handles to get the turn in a background thread.
-     */
-    private class GetTurnAsyncTask extends AsyncTask<Void, Void, Turn> {
-
-        @Override
-        protected Turn doInBackground(Void... voids) {
-            String turnId = Utils.getSharedPreference(getApplicationContext(), Constants.SHARED_PREF_USER_TURN_ID_KEY);
-            return ApiUtils.getTurn(getBaseContext(), turnId);
-        }
-
-        @Override
-        protected void onPostExecute(Turn turn) {
-            if (turn != null) {
-                if (firstTimeRendered) new GetStopsByRouteAsyncTask().execute();
-                renderBusMarker(turn);
-                Utils.setSharedPreference(getApplicationContext(), Constants.SHARED_PREF_ROUTE_ID_KEY, turn.getRouteId());
-            } else {
-                Utils.showToast(getBaseContext(), getString(R.string.unknown_turn_location));
-            }
-        }
-    }
-
-    /**
-     * This class handles the request to get the stops by a route in a background thread.
-     */
-    private class GetStopsByRouteAsyncTask extends AsyncTask<Void, Void, ArrayList<Stop>> {
-
-        @Override
-        protected ArrayList<Stop> doInBackground(Void... params) {
-            String routeId = Utils.getSharedPreference(getApplicationContext(), Constants.SHARED_PREF_ROUTE_ID_KEY);
-            return ApiUtils.getStopsByRoute(getBaseContext(), routeId);
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Stop> stops) {
-            if (stops != null && !stops.isEmpty()) {
-                PolylineOptions polylineOptions = new PolylineOptions();
-                ArrayList<LatLng> stopsLatLngs = new ArrayList<>();
-
-                for (Stop stop : stops) {
-                    MarkerOptions markerOptions = new MarkerOptions()
-                            .position(getLatLngFromString(stop.getLocation()))
-                            .title(getString(R.string.stop_name_marker_title, stop.getName()));
-                    mGoogleMap.addMarker(markerOptions);
-                    stopsLatLngs.add(getLatLngFromString(stop.getLocation()));
-                }
-
-                polylineOptions.addAll(stopsLatLngs);
-
-                mGoogleMap.addPolyline(polylineOptions);
-            } else {
-                Utils.showToast(getBaseContext(), getString(R.string.unable_to_draw_route_message));
-            }
-        }
-    }
+//    /**
+//     * This class handles to get the turn in a background thread.
+//     */
+//    private class GetTurnAsyncTask extends AsyncTask<Void, Void, Turn> {
+//
+//        @Override
+//        protected Turn doInBackground(Void... voids) {
+//            String turnId = Utils.getSharedPreference(getApplicationContext(), Constants.SHARED_PREF_USER_TURN_ID_KEY);
+//            return ApiUtils.getTurn(getBaseContext(), turnId);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Turn turn) {
+//            if (turn != null) {
+//                if (firstTimeRendered) new GetStopsByRouteAsyncTask().execute();
+//                renderBusMarker(turn);
+//                Utils.setSharedPreference(getApplicationContext(), Constants.SHARED_PREF_ROUTE_ID_KEY, turn.getRouteId());
+//            } else {
+//                Utils.showToast(getBaseContext(), getString(R.string.unknown_turn_location));
+//            }
+//        }
+//    }
+//
+//    /**
+//     * This class handles the request to get the stops by a route in a background thread.
+//     */
+//    private class GetStopsByRouteAsyncTask extends AsyncTask<Void, Void, ArrayList<Stop>> {
+//
+//        @Override
+//        protected ArrayList<Stop> doInBackground(Void... params) {
+//            String routeId = Utils.getSharedPreference(getApplicationContext(), Constants.SHARED_PREF_ROUTE_ID_KEY);
+//            return ApiUtils.getStopsByRoute(getBaseContext(), routeId);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(ArrayList<Stop> stops) {
+//            if (stops != null && !stops.isEmpty()) {
+//                PolylineOptions polylineOptions = new PolylineOptions();
+//                ArrayList<LatLng> stopsLatLngs = new ArrayList<>();
+//
+//                for (Stop stop : stops) {
+//                    MarkerOptions markerOptions = new MarkerOptions()
+//                            .position(getLatLngFromString(stop.getLocation()))
+//                            .title(getString(R.string.stop_name_marker_title, stop.getName()));
+//                    mGoogleMap.addMarker(markerOptions);
+//                    stopsLatLngs.add(getLatLngFromString(stop.getLocation()));
+//                }
+//
+//                polylineOptions.addAll(stopsLatLngs);
+//
+//                mGoogleMap.addPolyline(polylineOptions);
+//            } else {
+//                Utils.showToast(getBaseContext(), getString(R.string.unable_to_draw_route_message));
+//            }
+//        }
+//    }
 }

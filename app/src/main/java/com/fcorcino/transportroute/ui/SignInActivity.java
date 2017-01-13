@@ -1,10 +1,8 @@
 package com.fcorcino.transportroute.ui;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -16,20 +14,21 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.leaderapps.transport.model.User;
-import com.leaderapps.transport.transportrouteclient.R;
-import com.leaderapps.transport.ui.pendingstops.PendingStopsListActivity;
-import com.leaderapps.transport.utils.ApiUtils;
-import com.leaderapps.transport.utils.Constants;
-import com.leaderapps.transport.utils.Utils;
-import com.leaderapps.transport.utils.ViewUtils;
+import com.fcorcino.transportroute.R;
+import com.fcorcino.transportroute.ui.pendingstops.PendingStopsListActivity;
+import com.fcorcino.transportroute.utils.Constants;
+import com.fcorcino.transportroute.utils.Utils;
+import com.fcorcino.transportroute.utils.ViewUtils;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 
-public class SignInActivity extends AppCompatActivity {
+public class SignInActivity extends BaseActivity {
 
     /**
-     * @var mUserNameEditText The edit text to type the user name to log in.
+     * @var mEmailEditText The edit text to type the user name to log in.
      */
-    private EditText mUserNameEditText;
+    private EditText mEmailEditText;
 
     /**
      * @var mPasswordEditText The edit text to type the user password to log in.
@@ -100,12 +99,12 @@ public class SignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_in);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mUserNameEditText = (EditText) findViewById(R.id.user_name_edit_text);
-        mUserNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mEmailEditText = (EditText) findViewById(R.id.email_edit_text);
+        mEmailEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if (!hasFocus)
-                    new ValidateUsernameAsyncTask().execute(ViewUtils.getTextFromEditText(mUserNameEditText));
+                // if (!hasFocus)
+                // new ValidateUsernameAsyncTask().execute(ViewUtils.getTextFromEditText(mEmailEditText));
             }
         });
 
@@ -166,77 +165,87 @@ public class SignInActivity extends AppCompatActivity {
         boolean areFieldsValid = true;
         String errorMessage = getString(R.string.require_field_error_message);
         EditText[] editTexts = {
-                mUserNameEditText,
+                mEmailEditText,
                 mPasswordEditText,
         };
 
-        for (EditText editText : editTexts) {
-            areFieldsValid = ViewUtils.validateEditText(editText, errorMessage);
-        }
+//        for (EditText editText : editTexts) {
+//            areFieldsValid = ViewUtils.validateEditText(editText, errorMessage);
+//        }
 
-        if (areFieldsValid) new LogInUserAsyncTask().execute(
-                ViewUtils.getTextFromEditText(mUserNameEditText),
-                ViewUtils.getTextFromEditText(mPasswordEditText));
-    }
-
-    /**
-     * Handles the log in of an user in a background thread.
-     */
-    private class LogInUserAsyncTask extends AsyncTask<String, Void, User> {
-
-        @Override
-        protected void onPreExecute() {
-            mLogInControlsContainer.setVisibility(View.GONE);
-            mLoadingIndicatorProgressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected User doInBackground(String... params) {
-            String userName = params[0];
-            String password = params[1];
-            return ApiUtils.logInUser(getBaseContext(), userName, password);
-        }
-
-        @Override
-        protected void onPostExecute(User user) {
-            if (user != null) {
-                Utils.setSharedPreference(getApplicationContext(), Constants.SHARED_PREF_USER_ID_KEY, user.getUserId());
-                Utils.setSharedPreference(getApplicationContext(), Constants.SHARED_PREF_USER_NAME_KEY, user.getName());
-                Utils.setSharedPreference(getApplicationContext(), Constants.SHARED_PREF_USER_TYPE_KEY, user.getUserTypeId());
-                goToHomeScreen(user.getUserTypeId());
-                finish();
-            } else {
-                Utils.showToast(getBaseContext(), SignInActivity.this.getString(R.string.invalid_log_in_message));
-            }
-
-            mLogInControlsContainer.setVisibility(View.VISIBLE);
-            mLoadingIndicatorProgressBar.setVisibility(View.GONE);
+        if (areFieldsValid) {
+            mFirebaseAuth.signInWithEmailAndPassword(
+                    ViewUtils.getTextFromEditText(mEmailEditText),
+                    ViewUtils.getTextFromEditText(mPasswordEditText)
+            ).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (!task.isSuccessful()) {
+                        Utils.showToast(SignInActivity.this, getString(R.string.invalid_log_in_message));
+                    }
+                }
+            });
         }
     }
 
-    /**
-     * Handles the request to validate the username in a background thread.
-     */
-    private class ValidateUsernameAsyncTask extends AsyncTask<String, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            String userName = params[0];
-            return ApiUtils.validateUsername(getBaseContext(), userName);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean valid) {
-            TextInputLayout textInputLayout = (TextInputLayout) mUserNameEditText.getParent();
-
-            if (!valid) {
-                textInputLayout.setErrorEnabled(true);
-                textInputLayout.setError(getString(R.string.user_already_taken));
-                mLogInButton.setEnabled(false);
-            } else {
-                mLogInButton.setEnabled(true);
-                textInputLayout.setErrorEnabled(false);
-            }
-        }
-    }
+//    /**
+//     * Handles the log in of an user in a background thread.
+//     */
+//    private class LogInUserAsyncTask extends AsyncTask<String, Void, User> {
+//
+//        @Override
+//        protected void onPreExecute() {
+//            mLogInControlsContainer.setVisibility(View.GONE);
+//            mLoadingIndicatorProgressBar.setVisibility(View.VISIBLE);
+//        }
+//
+//        @Override
+//        protected User doInBackground(String... params) {
+//            String userName = params[0];
+//            String password = params[1];
+//            return ApiUtils.logInUser(getBaseContext(), userName, password);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(User user) {
+//            if (user != null) {
+//                Utils.setSharedPreference(getApplicationContext(), Constants.SHARED_PREF_USER_ID_KEY, user.getUserId());
+//                Utils.setSharedPreference(getApplicationContext(), Constants.SHARED_PREF_USER_NAME_KEY, user.getName());
+//                Utils.setSharedPreference(getApplicationContext(), Constants.SHARED_PREF_USER_TYPE_KEY, user.getUserTypeId());
+//                goToHomeScreen(user.getUserTypeId());
+//                finish();
+//            } else {
+//                Utils.showToast(getBaseContext(), SignInActivity.this.getString(R.string.invalid_log_in_message));
+//            }
+//
+//            mLogInControlsContainer.setVisibility(View.VISIBLE);
+//            mLoadingIndicatorProgressBar.setVisibility(View.GONE);
+//        }
+//    }
+//
+//    /**
+//     * Handles the request to validate the username in a background thread.
+//     */
+//    private class ValidateUsernameAsyncTask extends AsyncTask<String, Void, Boolean> {
+//
+//        @Override
+//        protected Boolean doInBackground(String... params) {
+//            String userName = params[0];
+//            return ApiUtils.validateUsername(getBaseContext(), userName);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Boolean valid) {
+//            TextInputLayout textInputLayout = (TextInputLayout) mEmailEditText.getParent();
+//
+//            if (!valid) {
+//                textInputLayout.setErrorEnabled(true);
+//                textInputLayout.setError(getString(R.string.user_already_taken));
+//                mLogInButton.setEnabled(false);
+//            } else {
+//                mLogInButton.setEnabled(true);
+//                textInputLayout.setErrorEnabled(false);
+//            }
+//        }
+//    }
 }

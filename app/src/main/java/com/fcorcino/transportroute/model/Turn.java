@@ -3,7 +3,6 @@ package com.fcorcino.transportroute.model;
 import java.io.Serializable;
 
 public class Turn implements Serializable {
-    private static final long serialVersionUID = -7004459956320014957L;
     private String turnId, name, departHour, status, driverId, stationId, routeId, busId, location, lastStop, lastStopName;
     private double distance;
 

@@ -7,9 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.leaderapps.transport.model.PendingStop;
-import com.leaderapps.transport.transportrouteclient.R;
-import com.leaderapps.transport.utils.Constants;
+import com.fcorcino.transportroute.R;
+import com.fcorcino.transportroute.model.PendingStop;
+import com.fcorcino.transportroute.utils.Constants;
 
 import java.util.ArrayList;
 

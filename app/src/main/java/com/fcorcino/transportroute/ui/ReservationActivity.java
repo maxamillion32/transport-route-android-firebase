@@ -6,13 +6,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,18 +21,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fcorcino.transportroute.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.leaderapps.transport.model.Reservation;
-import com.leaderapps.transport.transportrouteclient.R;
-import com.leaderapps.transport.ui.routes.RoutesListActivity;
-import com.leaderapps.transport.utils.ApiUtils;
-import com.leaderapps.transport.utils.BarcodeUtils;
-import com.leaderapps.transport.utils.Constants;
-import com.leaderapps.transport.utils.Utils;
+import com.fcorcino.transportroute.model.Reservation;
+import com.fcorcino.transportroute.ui.routes.RoutesListActivity;
+import com.fcorcino.transportroute.utils.BarcodeUtils;
+import com.fcorcino.transportroute.utils.Constants;
+import com.fcorcino.transportroute.utils.Utils;
 
-public class ReservationActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class ReservationActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     /**
      * @var mLoadingIndicatorProgressBar progress bar that shows up to alert the user that something is running in background.
@@ -88,7 +85,7 @@ public class ReservationActivity extends AppCompatActivity implements GoogleApiC
     protected void onResume() {
         super.onResume();
         String userId = Utils.getSharedPreference(this, Constants.SHARED_PREF_USER_ID_KEY);
-        new GetCurrentReservationAsyncTask().execute(userId);
+      //  new GetCurrentReservationAsyncTask().execute(userId);
     }
 
     @Override
@@ -135,7 +132,7 @@ public class ReservationActivity extends AppCompatActivity implements GoogleApiC
             }
             case R.id.action_release_reservation: {
                 String reservationId = Utils.getSharedPreference(getApplicationContext(), Constants.SHARED_PREF_RESERVATION_ID_KEY);
-                new UpdateReservationAsyncTask().execute(reservationId);
+               // new UpdateReservationAsyncTask().execute(reservationId);
                 return true;
             }
             default: {
@@ -148,7 +145,7 @@ public class ReservationActivity extends AppCompatActivity implements GoogleApiC
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.REQUEST_CODE_SELECT_ROUTE && resultCode == Activity.RESULT_OK) {
             Reservation reservation = (Reservation) data.getBundleExtra(Constants.ROUTE_RESERVATION_KEY).getSerializable(Constants.ROUTE_RESERVATION_KEY);
-            new MakeReservationAsyncTask().execute(reservation);
+            //new MakeReservationAsyncTask().execute(reservation);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -191,9 +188,7 @@ public class ReservationActivity extends AppCompatActivity implements GoogleApiC
      */
     private void logOutUser() {
         Utils.cleanUpPreferences(this);
-        Intent intent = new Intent(this, SignInActivity.class);
-        startActivity(intent);
-        finish();
+        mFirebaseAuth.signOut();
     }
 
     /**
@@ -274,95 +269,95 @@ public class ReservationActivity extends AppCompatActivity implements GoogleApiC
     }
 
 
-    /**
-     * This class handles the request to the make a reservation in a background thread.
-     */
-    private class MakeReservationAsyncTask extends AsyncTask<Reservation, Void, Reservation> {
-
-        @Override
-        protected void onPreExecute() {
-            mLoadingIndicatorProgressBar.setVisibility(View.VISIBLE);
-            mNoReservationMessageTextView.setVisibility(View.GONE);
-        }
-
-        @Override
-        protected Reservation doInBackground(Reservation... params) {
-            Reservation incompleteReservation = params[0];
-            return ApiUtils.makeReservation(
-                    getBaseContext(),
-                    incompleteReservation,
-                    mLastLocation.getLatitude(),
-                    mLastLocation.getLongitude(),
-                    Utils.getSharedPreference(getBaseContext(), Constants.SHARED_PREF_ROUTE_ID_KEY));
-        }
-
-        @Override
-        protected void onPostExecute(Reservation reservation) {
-            mLoadingIndicatorProgressBar.setVisibility(View.GONE);
-            mNoReservationMessageTextView.setVisibility(View.VISIBLE);
-
-            if (reservation != null) {
-                renderBarCode(reservation);
-            } else {
-                Utils.showToast(getBaseContext(), getString(R.string.no_turn_available));
-            }
-        }
-    }
-
-    /**
-     * This class handles the request to get the current reservation in a background thread.
-     */
-    private class GetCurrentReservationAsyncTask extends AsyncTask<String, Void, Reservation> {
-
-        @Override
-        protected void onPreExecute() {
-            mLoadingIndicatorProgressBar.setVisibility(View.VISIBLE);
-            mNoReservationMessageTextView.setVisibility(View.GONE);
-            mReservationTitleTextView.setVisibility(View.GONE);
-        }
-
-        @Override
-        protected Reservation doInBackground(String... params) {
-            String userId = params[0];
-            return ApiUtils.getCurrentReservation(getBaseContext(), userId);
-        }
-
-        @Override
-        protected void onPostExecute(Reservation reservation) {
-            mLoadingIndicatorProgressBar.setVisibility(View.GONE);
-
-            if (reservation != null) {
-                Utils.setSharedPreference(getApplicationContext(), Constants.SHARED_PREF_RESERVATION_ID_KEY, reservation.getReservationId());
-                Utils.setSharedPreference(getApplicationContext(), Constants.SHARED_PREF_USER_TURN_ID_KEY, reservation.getTurnId());
-                renderBarCode(reservation);
-                renderReservationDetail(reservation);
-            } else {
-                clearBarcode();
-                mNoReservationMessageTextView.setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
-    /**
-     * This class handles the request to update the reservation in a background thread.
-     */
-    private class UpdateReservationAsyncTask extends AsyncTask<String, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            String reservationId = params[0];
-            return ApiUtils.updateReservation(getBaseContext(), reservationId, Constants.STATUS_VALUE_DELIVERED);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean isUpdated) {
-            if (isUpdated) {
-                String userId = Utils.getSharedPreference(ReservationActivity.this, Constants.SHARED_PREF_USER_ID_KEY);
-                new GetCurrentReservationAsyncTask().execute(userId);
-                Utils.showToast(getBaseContext(), getString(R.string.reservation_released_message));
-            } else {
-                Utils.showToast(getBaseContext(), getString(R.string.invalid_reservation_message));
-            }
-        }
-    }
+//    /**
+//     * This class handles the request to the make a reservation in a background thread.
+//     */
+//    private class MakeReservationAsyncTask extends AsyncTask<Reservation, Void, Reservation> {
+//
+//        @Override
+//        protected void onPreExecute() {
+//            mLoadingIndicatorProgressBar.setVisibility(View.VISIBLE);
+//            mNoReservationMessageTextView.setVisibility(View.GONE);
+//        }
+//
+//        @Override
+//        protected Reservation doInBackground(Reservation... params) {
+//            Reservation incompleteReservation = params[0];
+//            return ApiUtils.makeReservation(
+//                    getBaseContext(),
+//                    incompleteReservation,
+//                    mLastLocation.getLatitude(),
+//                    mLastLocation.getLongitude(),
+//                    Utils.getSharedPreference(getBaseContext(), Constants.SHARED_PREF_ROUTE_ID_KEY));
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Reservation reservation) {
+//            mLoadingIndicatorProgressBar.setVisibility(View.GONE);
+//            mNoReservationMessageTextView.setVisibility(View.VISIBLE);
+//
+//            if (reservation != null) {
+//                renderBarCode(reservation);
+//            } else {
+//                Utils.showToast(getBaseContext(), getString(R.string.no_turn_available));
+//            }
+//        }
+//    }
+//
+//    /**
+//     * This class handles the request to get the current reservation in a background thread.
+//     */
+//    private class GetCurrentReservationAsyncTask extends AsyncTask<String, Void, Reservation> {
+//
+//        @Override
+//        protected void onPreExecute() {
+//            mLoadingIndicatorProgressBar.setVisibility(View.VISIBLE);
+//            mNoReservationMessageTextView.setVisibility(View.GONE);
+//            mReservationTitleTextView.setVisibility(View.GONE);
+//        }
+//
+//        @Override
+//        protected Reservation doInBackground(String... params) {
+//            String userId = params[0];
+//            return ApiUtils.getCurrentReservation(getBaseContext(), userId);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Reservation reservation) {
+//            mLoadingIndicatorProgressBar.setVisibility(View.GONE);
+//
+//            if (reservation != null) {
+//                Utils.setSharedPreference(getApplicationContext(), Constants.SHARED_PREF_RESERVATION_ID_KEY, reservation.getReservationId());
+//                Utils.setSharedPreference(getApplicationContext(), Constants.SHARED_PREF_USER_TURN_ID_KEY, reservation.getTurnId());
+//                renderBarCode(reservation);
+//                renderReservationDetail(reservation);
+//            } else {
+//                clearBarcode();
+//                mNoReservationMessageTextView.setVisibility(View.VISIBLE);
+//            }
+//        }
+//    }
+//
+//    /**
+//     * This class handles the request to update the reservation in a background thread.
+//     */
+//    private class UpdateReservationAsyncTask extends AsyncTask<String, Void, Boolean> {
+//
+//        @Override
+//        protected Boolean doInBackground(String... params) {
+//            String reservationId = params[0];
+//            return ApiUtils.updateReservation(getBaseContext(), reservationId, Constants.STATUS_VALUE_DELIVERED);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Boolean isUpdated) {
+//            if (isUpdated) {
+//                String userId = Utils.getSharedPreference(ReservationActivity.this, Constants.SHARED_PREF_USER_ID_KEY);
+//                new GetCurrentReservationAsyncTask().execute(userId);
+//                Utils.showToast(getBaseContext(), getString(R.string.reservation_released_message));
+//            } else {
+//                Utils.showToast(getBaseContext(), getString(R.string.invalid_reservation_message));
+//            }
+//        }
+//    }
 }

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.leaderapps.transport.ui.PreferencesActivity">
+    tools:context="com.fcorcino.transportroute.ui.PreferencesActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
 
         <fragment
             android:id="@+id/fragment_preference"
-            android:name="com.leaderapps.transport.ui.PreferencesActivity$TransMobilePreferenceFragment"
+            android:name="com.fcorcino.transportroute.ui.PreferencesActivity$TransMobilePreferenceFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 

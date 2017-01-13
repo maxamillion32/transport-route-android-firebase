@@ -13,7 +13,7 @@
     <!-- SignUpActivity activity-->
     <string name="title_activity_sign_up">Registrate</string>
     <string name="name_edit_text_hint">Nombre</string>
-    <string name="user_name_edit_text_hint">Nombre de Usuario</string>
+    <string name="email_edit_text_hint">Correo</string>
     <string name="sign_up_button_text">Registrarse</string>
     <string name="credit_card_edit_text_hint">Numero de Tarjeta de Credito</string>
     <string name="require_field_error_message">El campo es requerido</string>

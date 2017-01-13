@@ -6,9 +6,8 @@ import android.util.Log;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
-import com.leaderapps.transport.utils.ApiUtils;
-import com.leaderapps.transport.utils.Constants;
-import com.leaderapps.transport.utils.Utils;
+import com.fcorcino.transportroute.utils.Constants;
+import com.fcorcino.transportroute.utils.Utils;
 
 import java.util.List;
 
@@ -45,7 +44,7 @@ public class GeoFenceTransitionsIntentService extends IntentService {
             for (Object object : triggeringGeoFences) {
                 Geofence geofence = (Geofence) object;
                 String stopId = geofence.getRequestId();
-                ApiUtils.updateTurnLastStop(getBaseContext(), turnId, stopId);
+                //ApiUtils.updateTurnLastStop(getBaseContext(), turnId, stopId);
             }
         }
     }

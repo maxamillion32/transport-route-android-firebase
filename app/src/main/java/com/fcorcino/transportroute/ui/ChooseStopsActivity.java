@@ -2,29 +2,25 @@ package com.fcorcino.transportroute.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 
-import com.leaderapps.transport.model.Reservation;
-import com.leaderapps.transport.model.Stop;
-import com.leaderapps.transport.transportrouteclient.R;
-import com.leaderapps.transport.utils.ApiUtils;
-import com.leaderapps.transport.utils.Constants;
-import com.leaderapps.transport.utils.Utils;
-import com.leaderapps.transport.utils.ViewUtils;
+import com.fcorcino.transportroute.R;
+import com.fcorcino.transportroute.model.Reservation;
+import com.fcorcino.transportroute.model.Stop;
+import com.fcorcino.transportroute.utils.Constants;
+import com.fcorcino.transportroute.utils.Utils;
+import com.fcorcino.transportroute.utils.ViewUtils;
 
 import java.util.ArrayList;
 
-public class ChooseStopsActivity extends AppCompatActivity {
+public class ChooseStopsActivity extends BaseActivity {
 
     /**
      * @var mLoadingIndicatorProgressBar progress bar that shows up to alert the user that something is running in background.
@@ -75,7 +71,7 @@ public class ChooseStopsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        new GetStopsByRouteAsyncTask().execute(mRouteId);
+        //new GetStopsByRouteAsyncTask().execute(mRouteId);
     }
 
     /**
@@ -127,65 +123,65 @@ public class ChooseStopsActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * This class handles the request to get the stops by a route in a background thread.
-     */
-    private class GetStopsByRouteAsyncTask extends AsyncTask<String, Void, ArrayList<Stop>> {
-
-        @Override
-        protected void onPreExecute() {
-            mLoadingIndicatorProgressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected ArrayList<Stop> doInBackground(String... params) {
-            String routeId = params[0];
-            return ApiUtils.getStopsByRoute(getBaseContext(), routeId);
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Stop> stops) {
-            mLoadingIndicatorProgressBar.setVisibility(View.GONE);
-
-            if (stops != null && !stops.isEmpty()) {
-                mStopsArrayList.addAll(stops);
-
-                for (Stop stop : mStopsArrayList) {
-                    mStopsNameArrayList.add(stop.getName());
-                }
-
-                stopNameArrayAdapter = new ArrayAdapter<>(ChooseStopsActivity.this, android.R.layout.simple_spinner_dropdown_item, mStopsNameArrayList);
-                stopNameArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                mRouteFromSpinner = (Spinner) findViewById(R.id.route_from_spinner);
-                mRouteFromSpinner.setAdapter(stopNameArrayAdapter);
-                mRouteFromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                        ArrayList<String> filteredStopsArrayList = new ArrayList<>();
-                        Stop selectedStop = mStopsArrayList.get(position);
-                        int arrayLength = mStopsArrayList.size() - 1;
-
-                        for (int index = 0; index <= arrayLength; index++) {
-                            Stop stop = mStopsArrayList.get(index);
-
-                            if (stop.getSequence() > selectedStop.getSequence() || index == arrayLength) {
-                                mFilteredStopsArrayList.add(stop);
-                                filteredStopsArrayList.add(stop.getName());
-                            }
-                        }
-
-                        mRouteToSpinner = (Spinner) findViewById(R.id.route_to_spinner);
-                        ArrayAdapter<String> stopNameArrayAdapter = new ArrayAdapter<>(ChooseStopsActivity.this, android.R.layout.simple_spinner_dropdown_item, filteredStopsArrayList);
-                        stopNameArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        mRouteToSpinner.setAdapter(stopNameArrayAdapter);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                });
-            }
-        }
-    }
+//    /**
+//     * This class handles the request to get the stops by a route in a background thread.
+//     */
+//    private class GetStopsByRouteAsyncTask extends AsyncTask<String, Void, ArrayList<Stop>> {
+//
+//        @Override
+//        protected void onPreExecute() {
+//            mLoadingIndicatorProgressBar.setVisibility(View.VISIBLE);
+//        }
+//
+//        @Override
+//        protected ArrayList<Stop> doInBackground(String... params) {
+//            String routeId = params[0];
+//            return ApiUtils.getStopsByRoute(getBaseContext(), routeId);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(ArrayList<Stop> stops) {
+//            mLoadingIndicatorProgressBar.setVisibility(View.GONE);
+//
+//            if (stops != null && !stops.isEmpty()) {
+//                mStopsArrayList.addAll(stops);
+//
+//                for (Stop stop : mStopsArrayList) {
+//                    mStopsNameArrayList.add(stop.getName());
+//                }
+//
+//                stopNameArrayAdapter = new ArrayAdapter<>(ChooseStopsActivity.this, android.R.layout.simple_spinner_dropdown_item, mStopsNameArrayList);
+//                stopNameArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                mRouteFromSpinner = (Spinner) findViewById(R.id.route_from_spinner);
+//                mRouteFromSpinner.setAdapter(stopNameArrayAdapter);
+//                mRouteFromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                    @Override
+//                    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+//                        ArrayList<String> filteredStopsArrayList = new ArrayList<>();
+//                        Stop selectedStop = mStopsArrayList.get(position);
+//                        int arrayLength = mStopsArrayList.size() - 1;
+//
+//                        for (int index = 0; index <= arrayLength; index++) {
+//                            Stop stop = mStopsArrayList.get(index);
+//
+//                            if (stop.getSequence() > selectedStop.getSequence() || index == arrayLength) {
+//                                mFilteredStopsArrayList.add(stop);
+//                                filteredStopsArrayList.add(stop.getName());
+//                            }
+//                        }
+//
+//                        mRouteToSpinner = (Spinner) findViewById(R.id.route_to_spinner);
+//                        ArrayAdapter<String> stopNameArrayAdapter = new ArrayAdapter<>(ChooseStopsActivity.this, android.R.layout.simple_spinner_dropdown_item, filteredStopsArrayList);
+//                        stopNameArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                        mRouteToSpinner.setAdapter(stopNameArrayAdapter);
+//                    }
+//
+//                    @Override
+//                    public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//                    }
+//                });
+//            }
+//        }
+//    }
 }
